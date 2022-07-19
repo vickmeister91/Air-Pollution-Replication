@@ -2,464 +2,362 @@
 *************     1.    Data Preprocessing        *********************
 ********************************************************************************
 
-**************************
-
-* NOT JURISDICTION BASED *
-
-**************************
-
-
 ********************************************************************************
-* 1.1 Preprocess Yearly Pollution Data *
+* Table 4: Yearly regression, all pollutants *
 ********************************************************************************
 
 clear all
 
 
-
 * Paths
-global Tables /Users/shashanksingh/Desktop/air_pollution/results/tables_olexiy
-global Data /Users/shashanksingh/Desktop/air_pollution/data/
+*global Tables D:\Dropbox\India_Pollution\04_Tables
+*global Data D:\Dropbox\India_Pollution\Shashank\shashank_github_data\01_Data\Analysis
+
+global Data /Users/shashanksingh/Desktop/github/india_air_pollution/data 
+global Output /Users/shashanksingh/Desktop/github/india_air_pollution
 
 * Load Data
-import delimited "$Data/processed_data/yearly_air.csv",varnames(1) case(lower) bindquote(strict) maxquotedrows(200) clear 
-
-drop district
-
-gen district = district_x
-
-* Create district variable
-sort district year
+use "$Data/temp/tempdata_yearly_juris_pol.dta"
 
 
-* Create Variables
-* gender_binary indicates the share of judges on a case which are women
-gen JudgeWoman 		= (gender_binary < 1 & gender_binary ~= .) 
+********************************************************************************
+* Program to add AR CI to e-matrix *
+********************************************************************************
 
-gen JudgeGrad 		= ((ed_llb >= 0.5 & ed_llb~=.) | (ed_ba >= 0.5 & ed_ba~=.) | (ed_bsc >= 0.5 & ed_bsc~=.) | (ed_bcom >= 0.5 & ed_bcom~=.))
+** Define Extraction of upper and lower bound.
+capture program drop fnsplitci
+program define fnsplitci
+		* Remove parenthesis
+		local lp = strpos(arcset, "]") - 2      
+		scalar arcset = substr(arcset, 2, `lp')
 
-gen JudgePostGrad	= ((ed_ma >= 0.5 & ed_ma~=.) |  (ed_msc >= 0.5 & ed_msc~=.) | (ed_mcom >= 0.5 & ed_mcom~=.) | (ed_llm >= 0.5 & ed_llm~=.) | (ed_doc >= 0.5 & ed_doc~=.))
+		* Extract upper and lower bound
+		local pos = strpos(arcset, ",")
+		scalar lb = substr(arcset, 1, `pos'-1)
+		scalar ub = substr(arcset, `pos'+1, .)
+		*scalar ub = strtrim(ub)
 
-gen GovtPetitioner 	= (govt_petitioner == 1)
-gen GovtRespondent 	= (govt_respondent == 1)
-gen Appeal 			= (is_appeal == 1)
-gen Constitutional 	= (is_constitutional == 1)
+		* As numeric
+		scalar lb = real(lb)
+		scalar ub = real(ub)
+end
 
-* Environmental case
-gen EnvCase 		= (kanoon_id ~= .)
+** Add CI to stored results
+capture program drop EMatrix2StepARCI
+program define EMatrix2StepARCI, eclass
+        * Create matrix
+        matrix A = (lb, 0, 0, 0, 0 \ ub, 0, 0, 0, 0)
+		matrix colnames A = "FracGreenCases a a a a"
+        * Add matrix to e results
+        ereturn matrix cilar2 = A
+end
 
-* Problem: Some district years with kanoon cases have additional lines, with no case but pollution data, this falsifies our means when collapsing
-by district year : egen TotCases = total(EnvCase)
-drop if TotCases >= 1 & kanoon_id == .
+** Add CI to stored results
+capture program drop EMatrix2StepARCI1
+program define EMatrix2StepARCI1, eclass
+        * Create matrix
+        matrix A = (lb, 0, 0, 0, 0 \ ub, 0, 0, 0, 0)
+		matrix colnames A = "FracGreenCases_lag_1 a a a a"
+        * Add matrix to e results
+        ereturn matrix cilar2 = A
+end
+
+** Add CI to stored results
+capture program drop EMatrix2StepARCI2
+program define EMatrix2StepARCI2, eclass
+        * Create matrix
+        matrix A = (lb, 0, 0, 0, 0 \ ub, 0, 0, 0, 0)
+		matrix colnames A = "FracGreenCases_lag_2 a a a a"
+        * Add matrix to e results
+        ereturn matrix cilar2 = A
+end
+
+** Add CI to stored results
+capture program drop EMatrix2StepARCI3
+program define EMatrix2StepARCI3, eclass
+        * Create matrix
+        matrix A = (lb, 0, 0, 0, 0 \ ub, 0, 0, 0, 0)
+		matrix colnames A = "FracGreenCases_lag_3 a a a a"
+        * Add matrix to e results
+        ereturn matrix cilar2 = A
+end
 
 
-* Green Cases based on impact_coded
-*gen NotGreenCase	= (impact_coded < 0 & impact_coded ~= .)
-*gen GreenCase 		= (impact_coded > 0 & impact_coded ~= .)
-
-* Green Cases based on Median
-gen NotGreenCaseMedian 		= (most_freq_coded_vals < 0 & most_freq_coded_vals ~= .)
-gen GreenCaseMedian 		= (most_freq_coded_vals > 0 & most_freq_coded_vals ~= .)
-
-* Green Cases based on Mean
-gen NotGreenCaseMean 	= (mean_coded_vals < 0 & mean_coded_vals ~= .)
-gen GreenCaseMean 		= (mean_coded_vals > 0 & mean_coded_vals ~= .)
 
 
-* Create Judge count with 0 instead of .
-gen NumJudges 		= num_judges
-replace NumJudges 	= 0 	if num_judges == .
+********************************************************************************
+* All India - CI *
+********************************************************************************
 
-
-
-* Create textfeatures with 1 if missing
-foreach var of varlist lsa* {
-	gen One`var'		= `var'
-	replace One`var' 	= 1 	if `var' == .
+forvalues p = 1/25{
+	
+	by district: gen lag_1_d2v_vec`p' = d2v_vec`p'[_n-1] 
+	by district: gen lag_2_d2v_vec`p' = d2v_vec`p'[_n-2] 
+	by district: gen lag_3_d2v_vec`p' = d2v_vec`p'[_n-3] 
+	by district: gen lag_4_d2v_vec`p' = d2v_vec`p'[_n-4] 
+	by district: gen lag_5_d2v_vec`p' = d2v_vec`p'[_n-5] 
 }
 
-* For original textfeatures, replace . by 0
-foreach var of varlist lsa* {
-	replace `var' 		= 0 	if `var' == .
+** Add clusteres
+forvalues p = 1/5 {
+	by district: gen cluster_sp_lead_`p' = cluster_sp[_n+`p']
 }
-
-* For D2V textfeatures, replace . by 0
-foreach var of varlist d2v_vec* {
-	replace `var' 		= 0 	if `var' == .
-}
-
-
-* Collapse by Year and District
-collapse (sum) EnvCase NotGreenCaseMedian GreenCaseMedian NotGreenCaseMean GreenCaseMean (mean) bc du oc14 oc16 oc18 pm14 pm16 pm18 so2 so4 ss NumJudges JudgeWoman JudgeGrad JudgePostGrad GovtPetitioner GovtRespondent Appeal Constitutional lsa* Onelsa* d2v_vec*, by(district year)
-
-
-* Collapse by Year and District
-*collapse (sum) EnvCase NotGreenCase GreenCase NotGreenCaseMF GreenCaseMF NotGreenCaseMean GreenCaseMean JudgeWoman ///
-*	(mean) bod cod NumJudges JudgeGrad JudgePostGrad ///
-*	GovtPetitioner GovtRespondent Appeal Constitutional lsa*, by(district year)
-
-
-* New IV: multiplication
-replace	 JudgeWoman = 0 if EnvCase == 0
-
-gen  JudgeWomanOne = JudgeWoman
-replace	 JudgeWomanOne = 1 if EnvCase == 0
-
-replace	 JudgePostGrad = 0 if EnvCase == 0
-
-gen	 JudgePostGradOne = JudgePostGrad
-replace	 JudgePostGradOne = 1 if EnvCase == 0
-
-
-* Green Cases based on Median
-gen FracGreenCases			= GreenCaseMean / EnvCase
-replace FracGreenCases 		= 0 	if FracGreenCases == .
-
-* Create an alternative measure where FracGreenCases = 1 if missing
-gen FracGreenCasesOne 		= GreenCaseMean / EnvCase
-replace FracGreenCasesOne 	= 1 	if FracGreenCasesOne == .
-
-* Create an alternative measure where FracGreenCases = . if missing
-gen FracGreenCasesMis 		= GreenCaseMean / EnvCase
-
-* Green Cases based on Mean
-gen FracGreenCasesMedian 	= GreenCaseMedian / EnvCase
-replace FracGreenCasesMedian = 0 	if FracGreenCasesMedian == .
-
-
-
-* Take out "neutral" cases
-
-
-foreach var of varlist bc du oc14 oc16 oc18 pm14 pm16 pm18 so2 so4 ss {
-
-* Create 3 year MA 
-gen `var'_ma 		= `var'
-by district: replace `var'_ma = (`var'_ma[_n-3] + `var'_ma[_n-2] + `var'_ma[_n-1]) / 3 if `var' == .
-
-
-
-* Create log value of BOD and COD
-gen ln_`var'		= 	ln(`var')
-gen ln_`var'_ma		= 	ln(`var'_ma)
-
+forvalues p = 0/5 {
+	by district: gen cluster_sp_lag_`p' = cluster_sp[_n-`p']
 }
 
 
-* Create Case Dummy
-gen CaseDummy 	= (EnvCase > 0)
 
-* Labels
-label var FracGreenCases 		"Fraction of Green Cases (Mean)"
-label var FracGreenCasesMedian 	"Fraction of Green Cases (Median)"
-
-label var FracGreenCasesOne 	"Fraction of Green Cases, Missing = 1"
-label var FracGreenCasesMis 	"Fraction of Green Cases, Missing = ."
-
-label var GreenCaseMedian 		"Total Green Cases (Median)"
-label var GreenCaseMean 		"Total Green Cases (Mean)"
-label var EnvCase 			"Total Cases"
-label var NumJudges 		"Number of Judges"
-label var Constitutional 	"Constitutional"
-label var Appeal 			"Appeal"
-label var GovtRespondent 	"Government is Respondent"
-label var GovtPetitioner 	"Government is Petitioner"
-
-label var JudgePostGrad 	"Majority Judges have a Post Graduate Degree (mean)"
-label var JudgeGrad 		"Majority Judges have a Graduate Degree (mean)"
-label var JudgeWoman 		"Majority Judges are Female"
-
-label var JudgeWomanOne		"Majority Judges are Female, Missing = 1"
-label var JudgePostGradOne 	"Majority Judges have a Post Graduate Degree, Missing = 1"
+forvalues p = 1/3{
+	
 
 
-
-
-label var CaseDummy "Case Dummy"
-
-drop if district == ""
-
-
-sort district year
-encode district, gen(district_encoded)
-
-
-
-********************************************************************************
-****************** 2. Yearly Pollution Panel Regressions ***********************
-********************************************************************************
-
-********************************************************************************
-* Look at different first stage regressions *
-********************************************************************************
-
-
-*foreach var of varlist bc du oc14 oc16 oc18 pm14 pm16 pm18 so2 so4 ss {
-
-* Clear estimates
-*estimates clear
-*eststo clear
-
-*eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad lsa*) CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(district_encoded) partial(i.district_encoded) first robust savefirst savefprefix(fs1)
-*scalar ff = e(first)["F", "FracGreenCases"]
-*estadd scalar fF = ff : fs1*
-
-*eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWomanOne JudgePostGradOne Onelsa*) CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(district_encoded) partial(i.district_encoded) first robust savefirst savefprefix(fs2)
-*scalar ff = e(first)["F", "FracGreenCases"]
-*estadd scalar fF = ff : fs2*
-
-*estadd local method "IV" : fs*
-*estadd local covar "Yes" : fs*
-*estadd local fe "Yes" : fs*
-*estadd local clust "District" : fs*
-*estadd local textiv "LSA" : fs*
-
-*esttab fs1* fs2* using "$Tables/`var'_Table_FS_Instruments_ZeroVsOne.tex", se replace label star(* 0.10 ** 0.05 *** 0.01) stats(method textiv fe covar clust fF N, labels("Method" "25 Text IVs" "Year and District FEs" "Covariates" "Clustering" "F" "N")) keep(JudgeWoman JudgePostGrad JudgeWomanOne JudgePostGradOne CaseDummy _cons) order(JudgeWoman JudgePostGrad JudgeWomanOne JudgePostGradOne CaseDummy _cons) sfmt(%9.2fc) title("`var' Yearly (No Lag): Comparing First Stages with different Specifications") mtitles("Frac of Green Cases (Zero)" "Frac Green Cases (Zero)") booktabs fragment
-*}
-
-
-
-********************************************************************************
-* 1st stages, adding variables *
-********************************************************************************
-
-foreach var of varlist bc du oc14 oc16 oc18 pm14 pm16 pm18 so2 so4 ss {
-
-* Clear estimates
+** Estimates
 estimates clear
 eststo clear
 
-* Without 25 Text instruments
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad) if FracGreenCasesMis != ., cluster(district_encoded) robust first savefirst savefprefix(fs1)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs1*
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad) CaseDummy, cluster(district_encoded) robust first savefirst savefprefix(fs2)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs2*
+* Loop over pollution outcomes
+foreach rv of varlist lnbc lndu lnoc14 lnoc16 lnoc18 lnpm14 lnpm16 lnpm18 lnso2 lnso4 lnss {
+	display "`rv'"
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad) CaseDummy i.district_encoded i.year, cluster(district_encoded) robust first savefirst savefprefix(fs3)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs3*
+	quietly ivreg2 `rv' (FracGreenCases_lag_`p' = lag_`p'_d2v_vec* JudgePostGrad_lag_`p') CaseDummy_lag_`p' GovtRespondent_lag_`p' Appeal_lag_`p' Constitutional_lag_`p' i.district_encoded i.year, cluster(cluster_sp_lag_`p') robust small partial(i.district_encoded i.year)
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad) CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(district_encoded) robust first savefirst savefprefix(fs4)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs4*
+	* Store the estimates
+	estimates store modelAll_`rv'
+	
+	scalar bcoeff = _b[FracGreenCases_lag_`p']
 
-* With 25 LSA Text instruments
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad lsa*) if FracGreenCasesMis != ., cluster(district_encoded) robust first savefirst savefprefix(fs1T)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs1T*
+	* Check if underidentified
+	display "Underidentified:" e(idp)
+	
+	* If idp == ., then no instruments used
+	if e(idp) == . {
+		scalar arcset = "[.,.]"
+			
+		* Extract upper and lower bound
+		fnsplitci
+		
+		* Add CI to saved estimates
+		EMatrix2StepARCI`p'
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad lsa*) CaseDummy, cluster(district_encoded) robust first savefirst savefprefix(fs2T)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs2T*
+		* Restore final estimates
+		estimates store modelAll_`rv'
+		
+		* Display raw CI
+		display "Beta:" bcoeff
+		display "CI:" arcset
+	
+		display "idp == . => continue"
+		continue
+	}
+	
+	* Add efficient First Stage F stat
+	quietly weakivtest
+	display "Efficienf F:" r(F_eff)
+	estadd scalar fF = r(F_eff) : modelAll_`rv'
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad lsa*) CaseDummy i.district_encoded i.year, cluster(district_encoded) robust first savefirst savefprefix(fs3T)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs3T*
+	scalar efff = r(F_eff)
+	scalar fcrit = r(c_TSLS_5)
+	display fcrit
+	
+	* Estimate CI sets
+	quietly twostepweakiv 2sls `rv' CaseDummy_lag_`p' GovtRespondent_lag_`p' Appeal_lag_`p' Constitutional_lag_`p' i.district_encoded i.year (FracGreenCases_lag_`p' = lag_`p'_d2v_vec* JudgePostGrad_lag_`p'), cluster(cluster_sp_lag_`p') robust small partial(i.district_encoded i.year) gridmult(10) gridpoints(1000)
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad lsa*) CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(district_encoded) robust first savefirst savefprefix(fs4T)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs4T*
+	* Create scalar from AR CI set
+	* If efficient first stage F-stat >= fcrit, use Wald, if not use LC-CI
+	if efff >= fcrit {
+		display "Strong IV"
+		scalar arcset = e(wald_cset)
+	}
+	else {
+		display "Weak IV"
 
-* With 25 D2V Text instruments
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad d2v_vec*) if FracGreenCasesMis != ., cluster(district_encoded) robust first savefirst savefprefix(fs1d2v)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs1d2v*
+		* Use K CI
+		scalar arcset = e(k_2sls_cset)
+		
+		* Check if disjoint CI
+		scalar disjoint = strpos(arcset, "U")
+		if disjoint != 0 {
+			scalar arcset = "[.,.]"
+		}
+	}
+	
+	* Display raw CI
+	display "Beta:" bcoeff
+	display "CI:" arcset
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad d2v_vec*) CaseDummy, cluster(district_encoded) robust first savefirst savefprefix(fs2d2v)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs2d2v*
+	* Extract upper and lower bound
+	fnsplitci
+	
+	* Check if CI includes Point estimate
+	if (bcoeff < lb | bcoeff > ub)  & arcset != "[.,.]" {
+		display "not in CI"
+		scalar arcset = "[.,.]"
+		scalar lb = .
+		scalar ub = .
+	}
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad d2v_vec*) CaseDummy i.district_encoded i.year, cluster(district_encoded) robust first savefirst savefprefix(fs3d2v)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs3d2v*
+	* Reload estimates and Add AR Confidence Interval
+	estimates restore modelAll_`rv'
+	EMatrix2StepARCI`p'
+	
+	* Restore final estimates
+	estimates store modelAll_`rv'
+}
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad d2v_vec*) CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(district_encoded) robust first savefirst savefprefix(fs4d2v)
-scalar ff = e(first)["F", "FracGreenCases"]
-estadd scalar fF = ff : fs4d2v*
 
-estadd local method "IV" : fs*
-estadd local fe "Yes" : fs3* fs4*
-estadd local covar "Yes" : fs4*
-estadd local clust "District" : fs*
-estadd local nocases "Dropped" : fs1*
-estadd local nocases "Dummied" : fs2* fs3* fs4*
-estadd local textiv "LSA" : fs1T* fs2T* fs3T* fs4T*
-estadd local textiv "D2V" : fs1d2v* fs2d2v* fs3d2v* fs4d2v*
+** Add table local
+estadd local fe "Yes": modelAll_*
+estadd local covar "Yes": modelAll_*
+estadd local clust "Small Pond": modelAll_*
+estadd local nocases "Dummied": modelAll_*
 
-esttab fs* using "$Tables/`var'_Table_FS_Specifications_IV_TextIV_Specifications.tex", se replace label star(* 0.10 ** 0.05 *** 0.01) stats(method textiv nocases fe covar clust fF N, labels("Method" "25 Text IVs" "District-years with no cases" "Year and District FEs" "Covariates" "Clustering" "F" "N")) keep(JudgeWoman JudgePostGrad CaseDummy _cons) order(JudgeWoman JudgePostGrad CaseDummy _cons) sfmt(%9.2fc) title("Comparing First Stages with different Specifications in Yearly Pollution Regression (No Lag)") booktabs fragment mtitles("Frac of Green Cases" "Frac Green Cases" "Frac Green Cases" "Frac Green Cases" "Frac Green Cases" "Frac Green Cases" "Frac Green Cases" "Frac Green Cases" "Frac Green Cases" "Frac Green Cases" "Frac Green Cases" "Frac Green Cases")
+
+** Save table
+esttab modelAll_* using "$Tables/Table05_Yearly_Pollution_AllIndia_D2V_AR_lag_`p'.tex", cell(b(fmt(a3)) cilar2[1](fmt(a3) par("[" ";")) & cilar2[2](fmt(a3) par("" "]"))) replace label star(* 0.10 ** 0.05 *** 0.01) stats(nocases fe covar clust fF N k, labels("District-years with no cases" "Year and District FEs" "Covariates" "Clustering" "Eff First Stage F" "N" "\midrule \midrule")) keep(FracGreenCases_lag_`p' CaseDummy_lag_`p') order(FracGreenCases_lag_`p' CaseDummy_lag_`p') sfmt(%9.2fc) title("") booktabs fragment mtitles(ln(bc) ln(du) ln(oc14) ln(oc16) ln(oc18) ln(pm14) ln(pm16) ln(pm18) ln(so2) ln(so4) ln(ss)) collabels(none) prehead("\textbf{Panel A: All India _lag_`p'} \\")
 
 }
 
 
-
 ********************************************************************************
-* 2nd stage OLS / IV / Text IV, adding variables *
+* Program to add AR CI to e-matrix *
 ********************************************************************************
 
+** Define Extraction of upper and lower bound.
+capture program drop fnsplitci
+program define fnsplitci
+		* Remove parenthesis
+		local lp = strpos(arcset, "]") - 2      
+		scalar arcset = substr(arcset, 2, `lp')
+
+		* Extract upper and lower bound
+		local pos = strpos(arcset, ",")
+		scalar lb = substr(arcset, 1, `pos'-1)
+		scalar ub = substr(arcset, `pos'+1, .)
+		*scalar ub = strtrim(ub)
+
+		* As numeric
+		scalar lb = real(lb)
+		scalar ub = real(ub)
+end
+
+** Add CI to stored results
+capture program drop EMatrix2StepARCI
+program define EMatrix2StepARCI, eclass	
+        * Create matrix
+        matrix A = (lb, 0, 0, 0, 0 \ ub, 0, 0, 0, 0)
+		matrix colnames A = "FracGreenCases a a a a"
+        * Add matrix to e results
+        ereturn matrix cilar2 = A
+end
 
 
-* Change labels
-label var FracGreenCases 	"Fraction of Green Cases"
-
-foreach var of varlist bc du oc14 oc16 oc18 pm14 pm16 pm18 so2 so4 ss {
-
-* Clear estimates
+** Estimates
 estimates clear
 eststo clear
 
-* Drop missing FracGreenCases
-eststo: xi: ivreg2 `var' FracGreenCases if FracGreenCasesMis != ., cluster(district_encoded) robust
-estadd local weak_f 	""
-estadd local method 	"OLS"
-estadd local fe 		""
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dropped"
-estadd local textiv 	""
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad) if FracGreenCasesMis != ., cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		""
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dropped"
-estadd local textiv 	""
+* Loop over pollution outcomes
+foreach rv of varlist lnbc lndu lnoc14 lnoc16 lnoc18 lnpm14 lnpm16 lnpm18 lnso2 lnso4 lnss {
+	display "`rv'"
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad lsa*) if FracGreenCasesMis != ., cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		""
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dropped"
-estadd local textiv 	"LSA"
+	quietly ivreg2 `rv' (FracGreenCases = d2v_vec* JudgePostGrad) CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(cluster_sp) robust small partial(i.district_encoded i.year)
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad d2v_vec*) if FracGreenCasesMis != ., cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		""
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dropped"
-estadd local textiv 	"D2V"
+	* Store the estimates
+	estimates store modelAll_`rv'
+	
+	scalar bcoeff = _b[FracGreenCases]
 
-* Keep missing FracGreenCases as 0
-eststo: xi: ivreg2 `var' FracGreenCases CaseDummy, cluster(district_encoded) robust
-estadd local weak_f = 	""
-estadd local method 	"OLS"
-estadd local fe 		""
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	""
+	* Check if underidentified
+	display "Underidentified:" e(idp)
+	
+	* If idp == ., then no instruments used
+	if e(idp) == . {
+		scalar arcset = "[.,.]"
+			
+		* Extract upper and lower bound
+		fnsplitci
+		
+		* Add CI to saved estimates
+		EMatrix2StepARCI
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad) CaseDummy, cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		""
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	""
+		* Restore final estimates
+		estimates store modelAll_`rv'
+		
+		* Display raw CI
+		display "Beta:" bcoeff
+		display "CI:" arcset
+	
+		display "idp == . => continue"
+		continue
+	}
+	
+	* Add efficient First Stage F stat
+	quietly weakivtest
+	display "Efficienf F:" r(F_eff)
+	estadd scalar fF = r(F_eff) : modelAll_`rv'
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad lsa*) CaseDummy, cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		""
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	"LSA"
+	scalar efff = r(F_eff)
+	scalar fcrit = r(c_TSLS_5)
+	display fcrit
+	
+	* Estimate CI sets
+	quietly twostepweakiv 2sls `rv' CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year (FracGreenCases = d2v_vec* JudgePostGrad), cluster(cluster_sp) robust small partial(i.district_encoded i.year) gridmult(10) gridpoints(1000)
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad d2v_vec*) CaseDummy, cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		""
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	"D2V"
+	* Create scalar from AR CI set
+	* If efficient first stage F-stat >= fcrit, use Wald, if not use LC-CI
+	if efff >= fcrit {
+		display "Strong IV"
+		scalar arcset = e(wald_cset)
+	}
+	else {
+		display "Weak IV"
 
-* Add District and Year FEs
-eststo: xi: ivreg2 `var' FracGreenCases CaseDummy i.district_encoded i.year, cluster(district_encoded) robust
-estadd local weak_f = 	""
-estadd local method 	"OLS"
-estadd local fe 		"Yes"
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	""
+		* Use K CI
+		scalar arcset = e(k_2sls_cset)
+		
+		* Check if disjoint CI
+		scalar disjoint = strpos(arcset, "U")
+		if disjoint != 0 {
+			scalar arcset = "[.,.]"
+		}
+	}
+	
+	* Display raw CI
+	display "Beta:" bcoeff
+	display "CI:" arcset
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad) CaseDummy i.district_encoded i.year, cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		"Yes"
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	""
+	* Extract upper and lower bound
+	fnsplitci
+	
+	* Check if CI includes Point estimate
+	if (bcoeff < lb | bcoeff > ub)  & arcset != "[.,.]" {
+		display "not in CI"
+		scalar arcset = "[.,.]"
+		scalar lb = .
+		scalar ub = .
+	}
 
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad lsa*) CaseDummy i.district_encoded i.year, cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		"Yes"
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	"LSA"
-
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad d2v_vec*) CaseDummy i.district_encoded i.year, cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		"Yes"
-estadd local covar 		""
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	"D2V"
-
-* Add Covariates
-eststo: xi: ivreg2 `var' FracGreenCases CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(district_encoded) robust
-estadd local weak_f = 	""
-estadd local method 	"OLS"
-estadd local fe 		"Yes"
-estadd local covar 		"Yes"
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	""
-
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad) CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		"Yes"
-estadd local covar 		"Yes"
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	""
-
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad lsa*) CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		"Yes"
-estadd local covar 		"Yes"
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	"LSA"
-
-eststo: xi: ivreg2 `var' (FracGreenCases = JudgeWoman JudgePostGrad d2v_vec*) CaseDummy GovtRespondent Appeal Constitutional i.district_encoded i.year, cluster(district_encoded) robust
-estadd scalar weak_f = 	e(widstat)
-estadd local method 	"IV"
-estadd local fe 		"Yes"
-estadd local covar 		"Yes"
-estadd local clust 		"District"
-estadd local nocases 	"Dummied"
-estadd local textiv 	"D2V"
-
-
-esttab using "$Tables/`var'_Table_2ST_OLS_IV_TextIV_Specifications.tex", se replace label star(* 0.10 ** 0.05 *** 0.01) stats(method textiv nocases fe covar clust weak_f r2_a N, labels("Method" "25 Text IVs" "District-years with no cases" "Year and District FEs" "Covariates" "Clustering" "K-P First Stage F" "Adj. R2" "N")) keep(FracGreenCases CaseDummy _cons) order(FracGreenCases CaseDummy _cons) sfmt(%9.2fc) title("`var' Yearly (No Lag), OLS, IV, IV with Text") mtitles("`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'" "`var'") booktabs fragment
-
+	* Reload estimates and Add AR Confidence Interval
+	estimates restore modelAll_`rv'
+	EMatrix2StepARCI
+	
+	* Restore final estimates
+	estimates store modelAll_`rv'
 }
+
+
+** Add table local
+estadd local fe "Yes": modelAll_*
+estadd local covar "Yes": modelAll_*
+estadd local clust "Small Pond": modelAll_*
+estadd local nocases "Dummied": modelAll_*
+
+
+** Save table
+esttab modelAll_* using "$Tables/Table05_Yearly_Pollution_AllIndia_D2V_AR.tex", cell(b(fmt(a3)) cilar2[1](fmt(a3) par("[" ";")) & cilar2[2](fmt(a3) par("" "]"))) replace label star(* 0.10 ** 0.05 *** 0.01) stats(nocases fe covar clust fF N k, labels("District-years with no cases" "Year and District FEs" "Covariates" "Clustering" "Eff First Stage F" "N" "\midrule \midrule")) keep(FracGreenCases CaseDummy) order(FracGreenCases CaseDummy) sfmt(%9.2fc) title("") booktabs fragment mtitles(ln(bc) ln(du) ln(oc14) ln(oc16) ln(oc18) ln(pm14) ln(pm16) ln(pm18) ln(so2) ln(so4) ln(ss)) collabels(none) prehead("\textbf{Panel A: All India} \\")
+
+
+
 

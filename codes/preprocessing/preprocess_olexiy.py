@@ -1277,7 +1277,7 @@ class preprocessor():
         df_air_pollution["district"] = df_air_pollution["district"].apply(lambda x : x.lower())
         df_air_pollution["state"] = df_air_pollution["state"].apply(lambda x : x.lower())
         
-        df_air_pollution.to_csv(r"/Users/shashanksingh/Desktop/air_pollution/data/processed_data/air_pollution_olexiy_combined.csv", index = False)
+        df_air_pollution.to_csv(self.root_res_data+r"/air_pollution_olexiy_combined.csv", index = False)
         
         df_air_pollution_gpby_district_year = df_air_pollution.groupby(["state","district", "year"]).agg("mean")
         df_air_pollution_gpby_district_year = df_air_pollution_gpby_district_year.reset_index()
@@ -1349,6 +1349,13 @@ class preprocessor():
                             left_on = ["state", "year"], 
                             right_on = ["pollution_state", "delivery_year"], 
                             how = "left")
+           
+        # dummies for presence of a district, because we take state otherwise
+        df_monthly_merge["district_present"] = 1
+        df_yearly_merge["district_present"] = 1
+        
+        df_monthly_merge2["district_present"] = 1
+        df_yearly_merge2["district_present"] = 1
         
         df_monthly_merge_combined = pd.concat([df_monthly_merge,df_monthly_merge2], axis=0)
         df_yearly_merge_combined = pd.concat([df_yearly_merge,df_yearly_merge2], axis=0)
@@ -1356,14 +1363,26 @@ class preprocessor():
         df_monthly_merge_combined = df_monthly_merge_combined.reset_index(drop=True)
         df_yearly_merge_combined = df_yearly_merge_combined.reset_index(drop=True)
         
+        df_monthly_merge_combined["delhi_district_dummy"] = df_monthly_merge_combined["district_x"].apply(lambda x : 1 if "delhi" in str(x).lower() else 0)
+        df_monthly_merge_combined["delhi_state_dummy"] = df_monthly_merge_combined["state_x"].apply(lambda x : 1 if "delhi" in str(x).lower() else 0)
+        df_monthly_merge_combined["delhi_dummy"] = df_monthly_merge_combined["delhi_district_dummy"]+df_monthly_merge_combined["delhi_state_dummy"]
+        df_monthly_merge_combined["delhi_dummy"] = df_monthly_merge_combined["delhi_dummy"].apply(lambda x : 1 if x>0 else 0)
+        df_monthly_merge_combined = df_monthly_merge_combined.drop(["delhi_district_dummy","delhi_state_dummy"], axis=1)
+        
+        df_yearly_merge_combined["delhi_district_dummy"] = df_yearly_merge_combined["district_x"].apply(lambda x : 1 if "delhi" in str(x).lower() else 0)
+        df_yearly_merge_combined["delhi_state_dummy"] = df_yearly_merge_combined["state_x"].apply(lambda x : 1 if "delhi" in str(x).lower() else 0)
+        df_yearly_merge_combined["delhi_dummy"] = df_yearly_merge_combined["delhi_district_dummy"]+df_yearly_merge_combined["delhi_state_dummy"]
+        df_yearly_merge_combined["delhi_dummy"] = df_yearly_merge_combined["delhi_dummy"].apply(lambda x : 1 if x>0 else 0)
+        df_yearly_merge_combined = df_yearly_merge_combined.drop(["delhi_district_dummy","delhi_state_dummy"], axis=1)
+        
         df_monthly_merge_combined.to_csv(self.root_res_data+"/monthly_air.csv", index = "False")
         
         df_yearly_merge_combined.to_csv(self.root_res_data+"/yearly_air.csv", index = "False")
         
         
 if __name__ == '__main__':
-    a = "/Users/shashanksingh/Desktop/air_pollution/data/raw_data"
-    b = "/Users/shashanksingh/Desktop/air_pollution/data/processed_data"
+    a = "/Users/shashanksingh/Desktop/github/india_air_pollution/data/raw_data"
+    b = "/Users/shashanksingh/Desktop/github/india_air_pollution/data/processed_data"
     c = "/Users/shashanksingh/Desktop/IND_PROJ/water_pollution/Kanoon_html_new_with_air"
     s = preprocessor(a,b,c)
     
