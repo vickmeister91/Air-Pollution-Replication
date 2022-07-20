@@ -115,3 +115,23 @@ do clusters.do
 * Create dta files with monthly/yearly pollution/mortality variables on district level
 do preprocessing.do
 
+********************************************************************************
+* Delhi Regressions *
+********************************************************************************
+
+do prelim_regs_monthly_delhi_non_iv.do
+
+*do prelim_regs_monthly_delhi.do
+
+
+
+
+
+
+
+
+
+
+
+
+
