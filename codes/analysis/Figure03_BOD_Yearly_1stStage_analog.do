@@ -23,8 +23,8 @@
 
 
 ssc install loocv
-*ssc install gtools
-*net install binscatter2, from("https://raw.githubusercontent.com/mdroste/stata-binscatter2/master/")
+ssc install gtools
+net install binscatter2, from("https://raw.githubusercontent.com/mdroste/stata-binscatter2/master/")
 
 
 clear all
@@ -110,7 +110,7 @@ predict verdict_case_chars
 
 
 * Binscatter of Predicted Median Values by judges and Actual Median Coded Values
-qui binscatter most_freq_coded_vals verdict_judges, ///
+qui binscatter2 most_freq_coded_vals verdict_judges, ///
 	absorb(district_encoded delivery_year) ///
 	xtitle("Predicted Values by Judges") ytitle("Case Level") title("Median Coded Values") ///
 	name(A, replace) ///
@@ -118,7 +118,7 @@ qui binscatter most_freq_coded_vals verdict_judges, ///
 	
 
 * 
-qui binscatter verdict_case_chars verdict_judges, ///
+qui binscatter2 verdict_case_chars verdict_judges, ///
 	absorb(district_encoded delivery_year) ///
 	mcolors(orange) lcolors(black) msymbols(triangle) ///
 	xtitle("Predicted Values by Judges") title("Predicted Values by Control Variables") ytitle("") ///
@@ -164,14 +164,14 @@ loocv reghdfe most_freq_coded_vals govt_respondent is_appeal is_constitutional i
 predict verdict_case_chars
 
 * Binscatter of Predicted Median Values by judges and Actual Median Coded Values
-qui binscatter most_freq_coded_vals verdict_judges if pm14 != . & TotCases > 0, ///
+qui binscatter2 most_freq_coded_vals verdict_judges if pm14 != . & TotCases > 0, ///
 	absorb(district_encoded year) ///
 	xtitle("Predicted Values by Judges") ytitle("District Year Level: With Cases") ///
 	name(C, replace) ///
 	graphregion(color(white)) ylabel(-0.5(0.5)1) xlabel(-0.5(0.5)1)
 
 *
-qui binscatter verdict_case_chars verdict_judges if pm14 != . & TotCases > 0, ///
+qui binscatter2 verdict_case_chars verdict_judges if pm14 != . & TotCases > 0, ///
 	absorb(district_encoded year) ///
 	mcolors(orange) lcolors(black) msymbols(triangle) ///
 	xtitle("Predicted Values by Judges") ytitle("") ///
@@ -193,7 +193,7 @@ graph export "$Graphs\Figure03_Graphical_1stStage.png", replace
 ********************************************************************************
 * Reduced Form Binscatter *
 *******************************************************************************
-qui binscatter pm14 d2v* if pm14 != . & TotCases > 0, ///
+qui binscatter2 pm14 d2v* if pm14 != . & TotCases > 0, ///
 	absorb(district_encoded year) ///
 	mcolors(orange) lcolors(black) msymbols(triangle) ///
 	xtitle("Judges' D2V'") ytitle("PM 14") ///
