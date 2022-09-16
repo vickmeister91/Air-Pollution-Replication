@@ -1,7 +1,7 @@
 ********************************************************************************
 * Yearly Pollution *
 ********************************************************************************
-* global Data "/Users/shashanksingh/Desktop/github/india_air_pollution/data"
+global Data "C:\Users\wb570559\github\india_air_pollution\data"
 
 clear all
 
@@ -73,7 +73,7 @@ foreach var of varlist d2v* {
 }
 
 * Collapse by Year and District
-collapse (firstnm) TotCases (sum) EnvCase GreenCases NotGreenCases (mean) bc du oc14 oc16 oc18 pm14 pm16 pm18 so2 so4 ss NumJudges JudgeWoman JudgeGrad JudgePostGrad practice_area_civil practice_area_service practice_area_constitution practice_area_criminal practice_area_labour practice_area_company practice_area_tax practice_area_admin practice_area_commercial practice_area_arbitration practice_area_family GovtPetitioner GovtRespondent Appeal Constitutional lsa* d2v* cluster_bp cluster_sp delhi_dummy, by(district year)
+collapse (firstnm) TotCases (sum) EnvCase GreenCases NotGreenCases (mean) most_freq_coded_vals bc du oc14 oc16 oc18 pm14 pm16 pm18 so2 so4 ss NumJudges JudgeWoman JudgeGrad JudgePostGrad practice_area_civil practice_area_service practice_area_constitution practice_area_criminal practice_area_labour practice_area_company practice_area_tax practice_area_admin practice_area_commercial practice_area_arbitration practice_area_family GovtPetitioner GovtRespondent Appeal Constitutional lsa* d2v* cluster_bp cluster_sp delhi_dummy, by(district year)
 
 
 * New IV: multiplication
@@ -196,7 +196,7 @@ compress
 
 
 *** Save temporary dataset
-save "$Data/temp/tempdata_yearly_juris_pol.dta", replace
+save "$Data/temp_data/tempdata_yearly_juris_pol.dta", replace
 
 
 
@@ -400,5 +400,5 @@ compress
 
 
 *** Save temporary dataset
-save "$Data/temp/tempdata_monthly_juris_pol.dta", replace
+save "$Data/temp_data/tempdata_monthly_juris_pol.dta", replace
 

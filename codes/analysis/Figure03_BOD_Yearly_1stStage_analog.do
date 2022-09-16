@@ -22,9 +22,9 @@
 ********************************************************************************
 
 
-ssc install loocv
-ssc install gtools
-net install binscatter2, from("https://raw.githubusercontent.com/mdroste/stata-binscatter2/master/")
+*ssc install loocv
+*ssc install gtools
+*net install binscatter2, from("https://raw.githubusercontent.com/mdroste/stata-binscatter2/master/")
 
 
 clear all
@@ -195,9 +195,8 @@ graph export "$Graphs\Figure03_Graphical_1stStage.png", replace
 *******************************************************************************
 qui binscatter2 pm14 d2v* if pm14 != . & TotCases > 0, ///
 	absorb(district_encoded year) ///
-	mcolors(orange) lcolors(black) msymbols(triangle) ///
 	xtitle("Judges' D2V'") ytitle("PM 14") ///
 	name(E, replace) ///
-	graphregion(color(white)) ylabel(-0.5(0.5)1) xlabel(-0.5(0.5)1) 
+	graphregion(color(white)) ylabel(-0.5(0.5)1) xlabel(-0.5(0.5)1) ///
 	savegraph("$Graphs\Figure03_ReducedForm.png")
 
