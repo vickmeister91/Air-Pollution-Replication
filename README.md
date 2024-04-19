@@ -64,7 +64,7 @@ run batch script <u>"run_script_shashank.bat"</u>
 
 ## Schema:
 "chatGPT_locations_from_text - Copy.py" --> "Location - Copy.py" -->
-"India_NER - Copy.py" --> "gpt_take2 - Copy.py" --> Final Merge - Copy.py"
+"India_NER - Copy.py" --> "gpt_take2 - Copy.py" --> "Final Merge - Copy.py"
 
 I have added the "copy" suffix to identify my edited version
 + unpack the contents of <u+ Andy replicate </u+ to working directory
@@ -84,20 +84,20 @@ This replication concerns the data cleaning and extraction using the processed c
 
 <p style="font-size:24px;"> **Viknesh Replication:** </p>
 
-+ unpack contents of <u+ Viknesh replicate </u+ to working directory
++ unpack contents of <u> Viknesh replicate </u> to working directory
 + ensure "main_df.csv" from Andy and "air_pollution_olexiy_combined.csv" from Olexiy are in the working directory
 + ensure shashank's files (previously mentioned) are also in the same
-+ execute <u+"run_scripts_viknesh.bat"</u+
++ execute <u>"run_scripts_viknesh.bat"</u>
 
 ### Additional Instructions:
 
 + Before executing .bat files make sure that the R, STATA and Python executables are added to the system path
 + Edit the batch files accordinly if Python is not installed via Anaconda or the Anaconda environment is not base
 + Edit the Stata version in the command line (better yet use path ro stata exe file)
-+ For smooth execution, designate a working directory and unpack/download the replication contents as per above isntructions
++ For smooth execution, designate a working directory and unpack/download the replication contents as per above instructions
 (this is to ensure the output files are used by subsequent scripts without broken paths)
-+ Follow the order of replication as in the readme closely
++ Follow the order of replication as specified in this readme closely
 + check replication usccess by comparing with files in **Olexiy files** folder for Olexiy and [dropbox folder](https://www.dropbox.com/scl/fo/qtmghtt5k5xntk8k71lo1/h?rlkey=z707hlxkcijxa3u4ko5f3jo77&st=7nl6ylt3&dl=0) for the others
-+ Also make sure to add api key in the specifiedf files above
++ Also make sure to add api key in the specified files above
 
 
