@@ -49,7 +49,7 @@ Unpack the contents of <u>shashank replicate</u> folder in the working directory
 
 *importance_formula_and_analyse_parties.py*
 + Import Kanoon html files from dropbox
-+ replace "path_to_text" with the path of the folder containing html files
++ replace "path_to_text" with the path of the [folder containing html files](https://www.dropbox.com/scl/fo/bc2v5kd1e3vfu1lbksnb1/h/INPUT/DATA/Law/Air%20Pollution%20text?rlkey=4wmgcxy6ioswyjpijxmsehpfn&dl=0)
 + ensure the output file "case_data_final_with_additional_variables.csv" is in same folder as scripts
 
 *chatgpt_qx_annotator.py (5 files)*
@@ -58,7 +58,7 @@ Unpack the contents of <u>shashank replicate</u> folder in the working directory
 + ensure this file can collate all the 5 respnses into a final csv ("chatgptfull.csv")
 + need to enter api key for openai
 
-run batch script <u>"run_script_shashank.bat"</u>
+Finally, run batch script <u>"run_script_shashank.bat"</u>
 
 <p style="font-size:24px;"> **Andy Replication:** </p>
 
@@ -86,14 +86,14 @@ This replication concerns the data cleaning and extraction using the processed c
 
 + unpack contents of <u> Viknesh replicate </u> to working directory
 + ensure "main_df.csv" from Andy and "air_pollution_olexiy_combined.csv" from Olexiy are in the working directory
-+ ensure shashank's files (previously mentioned) are also in the same
++ ensure shashank's files (previously mentioned) are also in the same directory
 + execute <u>"run_scripts_viknesh.bat"</u>
 
 ### Additional Instructions:
 
 + Before executing .bat files make sure that the R, STATA and Python executables are added to the system path
-+ Edit the batch files accordinly if Python is not installed via Anaconda or the Anaconda environment is not base
-+ Edit the Stata version in the command line (better yet use path ro stata exe file)
++ Edit the batch files accordingly if Python is not installed via Anaconda or if the Anaconda environment is not base
++ Edit the Stata version in the command line (better yet use path to the stata exe file)
 + For smooth execution, designate a working directory and unpack/download the replication contents as per above instructions
 (this is to ensure the output files are used by subsequent scripts without broken paths)
 + Follow the order of replication as specified in this readme closely
