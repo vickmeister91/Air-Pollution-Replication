@@ -97,7 +97,7 @@ This replication concerns the data cleaning and extraction using the processed c
 + For smooth execution, designate a working directory and unpack/download the replication contents as per above instructions
 (this is to ensure the output files are used by subsequent scripts without broken paths)
 + Follow the order of replication as specified in this readme closely
-+ check replication usccess by comparing with files in **Olexiy files** folder for Olexiy and [dropbox folder](https://www.dropbox.com/scl/fo/qtmghtt5k5xntk8k71lo1/h?rlkey=z707hlxkcijxa3u4ko5f3jo77&st=7nl6ylt3&dl=0) for the others
++ check replication usccess by comparing with files in [Olexiy files](https://www.dropbox.com/scl/fo/qz9dxdi1kmpz4qf1moqzo/ACo-lKUybmEhJtD3pM3yJZM?rlkey=mv2kkemqhzn5brhfoiguvmtjh&st=bpk9ys33&dl=0) folder for Olexiy's code and [dropbox folder](https://www.dropbox.com/scl/fo/qtmghtt5k5xntk8k71lo1/h?rlkey=z707hlxkcijxa3u4ko5f3jo77&st=7nl6ylt3&dl=0) for the others
 + Also make sure to add api key in the specified files above
 
 
