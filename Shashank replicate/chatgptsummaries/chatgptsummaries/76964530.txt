@@ -1,0 +1,9 @@
+In a recent court order, the case between Yogesh Trading Company and ICICI Bank Ltd was heard. The appellant had approached the respondent for an overdraft facility, which was sanctioned. However, the appellant started defaulting on payments, and subsequently issued a cheque to the respondent, which was dishonoured. A legal notice was issued, and the accused/appellant was convicted. An appeal was filed, and the court heard both sides before making a judgment.
+
+The appellant argued that the security cheques presented by the respondent cannot be issued in discharge of any existing legal liability, and that no loan recall notice was issued. The respondent argued that the cheque was issued for consideration and the accused failed to rebut the presumption under Section 139 of the Negotiable Instruments Act.
+
+The court rejected the appellant's contention that the cheque in question was a security cheque and therefore not subject to Section 138 of the Negotiable Instruments Act. The court also dismissed the appellant's argument that no recall notice was given in terms of the loan agreement and that criminal proceedings under the complaint case are hit by Section 39 CA No.60/12 of the Indian Contract Act. The court further rejected the appellant's claim that they were not served with notice under Section 138 of the Negotiable Instruments Act.
+
+The court heard both sides and made a judgment, ultimately dismissing the appeal and sending the trial court record back with a copy of the order for information and compliance.
+
+This court order highlights the importance of understanding the legal implications of issuing cheques and the consequences of defaulting on payments. It also emphasizes the need for proper communication and documentation between parties involved in financial transactions to avoid legal disputes.

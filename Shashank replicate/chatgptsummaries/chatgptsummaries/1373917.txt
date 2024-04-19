@@ -1,0 +1,11 @@
+The court order in question pertains to a suit to enforce a mortgage bond. The plaintiff in the case had obtained an assignment for the mortgage, and the mortgaged properties were subsequently sold in a court auction. However, the plaintiff claimed that more was due to them than what had been received from the auction. 
+
+The court, however, found that the amount deposited in court went in full discharge of the mortgage. The plaintiff had attempted to rely on an endorsement to save the bar of limitation, but the court found that this endorsement was false. Additionally, the plaintiff sought to rely on an acknowledgment of liability by the mortgagor, but this ground of exemption was not pleaded in the plaint and therefore could not be relied upon.
+
+The plaintiff attempted to amend the plaint at a late stage in the second appeal, but the court refused to allow this amendment. 
+
+The case at hand highlights the importance of ensuring that all relevant information is included in a plaint from the outset. In this case, the plaintiff attempted to rely on an acknowledgment of liability by the mortgagor, but this ground of exemption was not pleaded in the plaint. As a result, the court could not consider this argument.
+
+Furthermore, the court's decision to refuse the plaintiff's request to amend the plaint at a late stage in the second appeal underscores the importance of ensuring that all relevant information is included in the initial filing. Attempting to amend a plaint at a late stage can be difficult, if not impossible, and can result in the loss of important arguments or evidence.
+
+Overall, this court order serves as a reminder of the importance of thorough and accurate pleadings in legal proceedings. By ensuring that all relevant information is included in the initial filing, parties can avoid potential issues and ensure that their arguments are considered by the court.

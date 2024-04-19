@@ -1,0 +1,15 @@
+The Delhi High Court recently passed a court order pertaining to three writ petitions challenging the orders passed by the appellate authority under the Water (Prevention and Control of Pollution) Cess Act. The main issue in question was the interpretation of item No. 14 of the 1 Schedule appended to the Act, which refers to Thermal, Diesel and Hydel Power generating industries. The question was whether a thermal power generating industry operated by natural gas or gas-based would come under the purview of the Act.
+
+The court held that even if a literal or commonsense meaning is attributed to the word "thermal," it would mean where power is generated through the generation of heat. Therefore, gas-based thermal power generating industries would come under the purview of the Act. The court dismissed the writ petitions with costs.
+
+The Water (Prevention and Control of Pollution) Cess Act was enacted in 1977 to provide for the levy and collection of a cess on water consumed by persons operating and carrying on certain types of industrial activities. The Act aims to prevent and control water pollution by regulating the discharge of pollutants into water bodies.
+
+The three writ petitions in question were filed by thermal power generating industries that operated using natural gas or gas-based. The industries argued that they were not liable to pay the cess under the Act as they did not fall under the purview of item No. 14 of the 1 Schedule appended to the Act.
+
+The court, however, held that the word "thermal" in item No. 14 of the 1 Schedule should be interpreted to mean where power is generated through the generation of heat. The court noted that the word "thermal" was not defined in the Act and therefore, it was necessary to interpret the word in its ordinary sense.
+
+The court also noted that the purpose of the Act was to prevent and control water pollution by regulating the discharge of pollutants into water bodies. The court held that gas-based thermal power generating industries were also liable to pay the cess under the Act as they discharged pollutants into water bodies.
+
+The court's decision is significant as it clarifies the scope of the Water (Prevention and Control of Pollution) Cess Act and ensures that all industries that discharge pollutants into water bodies are liable to pay the cess under the Act. The decision also highlights the importance of interpreting statutory provisions in their ordinary sense and in light of the purpose of the legislation.
+
+In conclusion, the Delhi High Court's recent court order clarifying the scope of the Water (Prevention and Control of Pollution) Cess Act is a significant development in environmental law. The court's decision ensures that all industries that discharge pollutants into water bodies are liable to pay the cess under the Act, regardless of the type of fuel used to generate power. The decision also underscores the importance of interpreting statutory provisions in their ordinary sense and in light of the purpose of the legislation.

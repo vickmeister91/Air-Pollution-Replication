@@ -1,0 +1,15 @@
+In a recent court case, the petitioner challenged an order passed by a trial court that dismissed their application for calling statements of account from ICICI Bank. The petitioner argued that the statements were necessary to rebut the legal presumption against them in a case related to a dishonored cheque issued in 2009. However, the court found that the petitioner had not provided any evidence of depositing money in those accounts and dismissed the petition.
+
+The case revolves around a dishonored cheque issued by the petitioner in 2009. The complainant alleged that the cheque was issued for a loan taken by the petitioner and that the cheque bounced due to insufficient funds in the account. The complainant filed a case against the petitioner under Section 138 of the Negotiable Instruments Act, 1881.
+
+During the trial, the complainant produced the dishonored cheque and the bank's memo as evidence. The memo showed that the cheque was dishonored due to insufficient funds in the account. The complainant also produced a letter from the bank stating that the petitioner did not have any account with the bank.
+
+In response, the petitioner argued that they had two accounts with ICICI Bank and that the statements of those accounts were necessary to rebut the legal presumption against them. The legal presumption under Section 139 of the Negotiable Instruments Act, 1881, is that the holder of a cheque received it for the discharge of any debt or liability. The burden of proof is on the accused to prove that the cheque was not issued for a debt or liability.
+
+The petitioner argued that the statements of their accounts with ICICI Bank would show that they had deposited money in those accounts and that the cheque was issued for a genuine transaction. However, the trial court dismissed the petitioner's application for calling the statements of account from ICICI Bank.
+
+The petitioner then filed a petition in the High Court challenging the trial court's order. The petitioner argued that the trial court had erred in dismissing their application for calling the statements of account from ICICI Bank. The petitioner contended that the statements were necessary to rebut the legal presumption against them.
+
+The High Court examined the petitioner's arguments and found that the petitioner had not provided any evidence of depositing money in those accounts. The High Court noted that the burden of proof was on the petitioner to prove that the cheque was not issued for a debt or liability. The High Court observed that the petitioner had not discharged their burden of proof and dismissed the petition.
+
+In conclusion, the court upheld the trial court's order and dismissed the petitioner's application for calling statements of account from ICICI Bank. The court found that the petitioner had not provided any evidence of depositing money in those accounts and had not discharged their burden of proof. The court's decision highlights the importance of providing evidence to support one's case and discharging the burden of proof in legal proceedings.

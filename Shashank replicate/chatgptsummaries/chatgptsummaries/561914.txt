@@ -1,0 +1,7 @@
+In a recent court order, the issue at hand was the rateable distribution of assets held by a court. Multiple decree-holders were claiming their share of the assets, and the court had to clarify the application of Section 73 of the Civil Procedure Code, which provides for rateable distribution. The court noted that this section is subject to Section 63, which recognizes exceptions to the rule.
+
+The court then delved into the effect of Clause (2) of Section 63, which states that if there are multiple executing courts, the sale by one of them is not null and void, but the proceeds must be distributed rateably amongst all the decree-holders. The court emphasized that this clause does not mean that Section 73 does not apply, but rather that it must be read subject to Section 63.
+
+Moving on to the specific case at hand, the court noted that all the decrees were passed by the same court. However, it still held that Section 63 applies, as it recognizes exceptions to the rule of rateable distribution. The court then ordered the purchaser to either elect to have a re-sale or pay into court the amount due on rateable distribution to the rival decree-holder.
+
+Overall, the court order clarifies the application of Section 73 and Section 63 in cases of rateable distribution of assets held by a court. It emphasizes that Section 63 recognizes exceptions to the rule of rateable distribution, but does not negate the application of Section 73. The order also highlights the importance of considering the specific circumstances of each case when applying these provisions.

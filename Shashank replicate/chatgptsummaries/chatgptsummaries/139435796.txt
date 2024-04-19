@@ -1,0 +1,13 @@
+The court order in question pertains to a petition filed under Section 482 of the Criminal Procedure Code (CrPC) challenging the order passed by the Judicial Magistrate First Class (JMFC) in Gwalior in Criminal Case No. 1850/2009. The petitioner had sought to quash the criminal proceedings against him on the ground of double jeopardy.
+
+The petitioner had argued that the proceedings under Section 138 of the Negotiable Instruments Act would amount to double jeopardy as the amount outstanding had already been recovered in separate recovery proceedings. However, the court rejected this argument, stating that the petitioner had not been tried on the allegation of returning the cheque by the bank on the ground of insufficient funds.
+
+The court noted that the petitioner was absconding and a perpetual arrest warrant had been issued against him. Therefore, he was not entitled to equitable relief. The court also observed that the petitioner had not made any effort to appear before the court and had not provided any explanation for his absence.
+
+The court further noted that the petitioner had not challenged the order of the JMFC in the appropriate forum and had instead filed a petition under Section 482 of the CrPC. The court held that the petitioner had not made out a case for quashing the criminal proceedings against him and dismissed the petition.
+
+The court's decision is significant as it clarifies the scope of double jeopardy in cases under Section 138 of the Negotiable Instruments Act. The court has held that the mere fact that the amount outstanding has been recovered in separate recovery proceedings does not amount to double jeopardy. The accused must be tried on the allegation of returning the cheque by the bank on the ground of insufficient funds for the defence of double jeopardy to succeed.
+
+The court's decision also highlights the importance of appearing before the court and challenging orders in the appropriate forum. The petitioner's failure to appear before the court and challenge the order of the JMFC in the appropriate forum proved fatal to his case.
+
+In conclusion, the court's decision in this case clarifies the scope of double jeopardy in cases under Section 138 of the Negotiable Instruments Act and emphasizes the importance of appearing before the court and challenging orders in the appropriate forum. The court's decision also serves as a reminder that absconding from the court and failing to provide an explanation for one's absence can prove fatal to one's case.
