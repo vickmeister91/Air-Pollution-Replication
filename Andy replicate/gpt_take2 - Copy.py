@@ -78,6 +78,7 @@ import time
 import pandas as pd
 from tqdm import tqdm
 
+# openai.api_key = ""
 
 # Create a temp folder if it doesn't exist
 os.makedirs(wd+r'/temp2',exists_ok=True)

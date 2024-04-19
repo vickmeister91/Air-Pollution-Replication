@@ -106,6 +106,7 @@ df["chunks"] = df["text"].apply(lambda x : break_up_text_to_chunks(x))
 # In[26]:
 
 
+# openai.api_key = ""
 
 
 # In[27]:

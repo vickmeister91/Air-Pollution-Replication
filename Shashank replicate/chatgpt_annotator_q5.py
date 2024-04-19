@@ -71,6 +71,7 @@ question = "In the following judgement order summary, predict on a scale of 0-10
 # In[6]:
 
 
+# openai.api_key = ""
 
 
 # In[7]:

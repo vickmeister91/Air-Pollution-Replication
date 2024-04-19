@@ -71,6 +71,7 @@ question = "In the following judgement order summary, did the court ask the poll
 # In[6]:
 
 
+# openai.api_key = ""
 
 
 # In[7]:
